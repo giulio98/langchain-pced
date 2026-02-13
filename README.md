@@ -26,6 +26,14 @@ where $\beta$ is the contrastive strength (dynamically computed via JSD when uns
 pip install langchain-pced
 ```
 
+### Required: Flash Attention
+
+Flash Attention is **required** for PCED to work. Install it before using the library:
+
+```bash
+pip install flash-attn --no-build-isolation
+```
+
 ### Dependencies
 
 | Package | Version | Purpose |
@@ -162,7 +170,7 @@ base_llm = HuggingFacePipeline.from_model_id(
     model_id="Qwen/Qwen3-8B",
     task="text-generation",
     device_map="auto",
-    pipeline_kwargs={"max_new_tokens": 256, "return_full_text": False},
+    pipeline_kwargs={"max_new_tokens": 512, "return_full_text": False},
 )
 chat_llm = ChatHuggingFace(llm=base_llm)
 
@@ -194,7 +202,8 @@ from langchain_core.output_parsers import StrOutputParser
 llm = PCEDLLM.from_model_id(
     model_id="Qwen/Qwen3-8B",
     device="cuda:0",
-    max_new_tokens=256,
+    max_new_tokens=512,
+    enable_thinking=True
 )
 chat = PCEDChatModel(llm=llm)
 
@@ -291,12 +300,10 @@ This prevents out-of-memory errors and ensures sufficient capacity for generatio
 PCED supports streaming generation for real-time applications:
 
 ```python
-chain = prompt | chat | StrOutputParser()
-
 for chunk in chain.stream({
     "question": "What is a panda?",
-    "expert_documents": docs,
-    "expert_scores": scores,
+    "expert_documents": [d.page_content for d in top_docs],
+    "expert_scores": fused_scores,
 }):
     print(chunk, end="", flush=True)
 ```
@@ -317,6 +324,7 @@ for chunk in chain.stream({
 | `do_sample` | `bool` | `None` | Enable stochastic sampling |
 | `enable_thinking` | `bool` | `False` | Enable thinking mode (Qwen3-style models) |
 | `device` | `str` | `"cuda:0"` | Computation device |
+| `attn_implementation` | `str` | `"paged\|flash_attention_2"` | Attention implementation (requires flash-attn) |
 
 **Note:** When sampling parameters are `None`, the model's `generation_config.json` defaults are used. For example:
 - Llama-3.1: `do_sample=True, temperature=0.6, top_p=0.9`

@@ -84,6 +84,10 @@ class PCEDLLM(BaseLLM):
     # Device configuration
     device: str = Field(default="cuda:0", description="Device to run on")
     torch_dtype: str = Field(default="bfloat16", description="Torch dtype")
+    attn_implementation: str = Field(
+        default="paged|flash_attention_2",
+        description="Attention implementation. Requires flash-attn: pip install flash-attn --no-build-isolation"
+    )
     
     # Bound expert data (set via bind())
     _expert_documents: Optional[List[str]] = PrivateAttr(default=None)
@@ -130,13 +134,10 @@ class PCEDLLM(BaseLLM):
         if self._tokenizer.pad_token is None:
             self._tokenizer.pad_token = self._tokenizer.eos_token
         
-        # Use paged attention for continuous batching
-        attn_implementation = "paged|flash_attention_2"
-        
         self._model = AutoModelForCausalLM.from_pretrained(
             self.model_id,
             torch_dtype=torch_dtype,
-            attn_implementation=attn_implementation,
+            attn_implementation=self.attn_implementation,
         ).to(self.device)
         self._model.eval()
         logger.info(f"Model loaded on {self.device}")
@@ -186,6 +187,7 @@ class PCEDLLM(BaseLLM):
         enable_thinking: bool = False,
         device: str = "cuda:0",
         torch_dtype: str = "bfloat16",
+        attn_implementation: str = "paged|flash_attention_2",
         **kwargs,
     ) -> "PCEDLLM":
         """
@@ -203,6 +205,7 @@ class PCEDLLM(BaseLLM):
             enable_thinking: Enable thinking mode for Qwen3-like models
             device: Device to run on
             torch_dtype: Torch dtype string
+            attn_implementation: Attention implementation (default: 'paged|flash_attention_2')
             
         Returns:
             PCEDLLM instance
@@ -219,6 +222,7 @@ class PCEDLLM(BaseLLM):
             enable_thinking=enable_thinking,
             device=device,
             torch_dtype=torch_dtype,
+            attn_implementation=attn_implementation,
             **kwargs,
         )
     
