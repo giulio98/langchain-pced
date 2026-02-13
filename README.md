@@ -287,14 +287,6 @@ PCED internally constructs:
 - **Amateur prompt**: Template with `{context}` → empty string (no retrieval context)
 - **Expert $i$ prompt**: Template with `{context}` → document $d_i$
 
-### Automatic Context Truncation
-
-Documents exceeding the model's context window are automatically truncated:
-
-$$\text{max\_doc\_length} = \text{max\_position\_embeddings} - \text{max\_new\_tokens} - \text{prompt\_overhead}$$
-
-This prevents out-of-memory errors and ensures sufficient capacity for generation.
-
 ## Streaming Support
 
 PCED supports streaming generation for real-time applications:
