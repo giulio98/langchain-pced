@@ -1,0 +1,59 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "langchain-pced"
+version = "0.2.0"
+description = "LangChain integration for Parallel Context-of-Experts Decoding (PCED) for RAG pipelines"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Giulio Corallo" },
+]
+keywords = [
+    "langchain",
+    "llm",
+    "rag",
+    "retrieval-augmented-generation",
+    "pced",
+    "contrastive-decoding",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "langchain-core>=1.0.0",
+    "transformers>=5.0.0",
+    "torch>=2.0.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-repo/langchain-pced"
+Documentation = "https://github.com/your-repo/langchain-pced#readme"
+Repository = "https://github.com/your-repo/langchain-pced"
+
+[tool.hatch.build.targets.wheel]
+packages = ["langchain_pced"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
