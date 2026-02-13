@@ -7,7 +7,7 @@ name = "langchain-pced"
 version = "0.2.0"
 description = "LangChain integration for Parallel Context-of-Experts Decoding (PCED) for RAG pipelines"
 readme = "README.md"
-license = "MIT"
+license = {text = "MIT"}
 requires-python = ">=3.10"
 authors = [
     { name = "Giulio Corallo" },
@@ -47,9 +47,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-repo/langchain-pced"
-Documentation = "https://github.com/your-repo/langchain-pced#readme"
-Repository = "https://github.com/your-repo/langchain-pced"
+Homepage = "https://github.com/giulio98/langchain-pced"
+Documentation = "https://github.com/giulio98/langchain-pced#readme"
+Repository = "https://github.com/giulio98/langchain-pced"
 
 [tool.hatch.build.targets.wheel]
 packages = ["langchain_pced"]
